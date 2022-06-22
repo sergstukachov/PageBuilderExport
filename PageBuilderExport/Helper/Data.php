@@ -106,18 +106,4 @@ class Data extends AbstractHelper
     {
         return $this->getModuleSetupDataDir() . Generator::UPGRADE_FILE_NAME . '-' . $version;
     }
-
-
-    public function isModuleOutputEnabled($moduleName = null)
-    {
-//        if ($moduleName === null) {
-//            $moduleName = $this->_getModuleName();
-//        }
-//
-//        return !$this->_scopeConfig->isSetFlag(
-//            'advanced/modules_disable_output/' . $moduleName,
-//            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-//        );
-        return true;
-    }
 }

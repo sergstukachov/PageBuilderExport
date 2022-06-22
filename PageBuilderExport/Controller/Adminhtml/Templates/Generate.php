@@ -7,9 +7,9 @@ use Magento\PageBuilder\Model\ResourceModel\Template\CollectionFactory;
 use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
 use SkillUp\PageBuilderExport\Model\Entity\AbstractEntity;
+use SkillUp\PageBuilderExport\Controller\Adminhtml\Generate as SkGenerate;
 
-
-class Generate extends \SkillUp\PageBuilderExport\Controller\Adminhtml\Generate
+class Generate extends SkGenerate
 {
 
     /**
@@ -84,7 +84,7 @@ class Generate extends \SkillUp\PageBuilderExport\Controller\Adminhtml\Generate
     {
         $ids = $this->getRequest()->getParam(Filter::SELECTED_PARAM) ?? null;
         if (!$ids && 'false' === $this->getRequest()->getParam(Filter::EXCLUDED_PARAM)) {
-            $collection = $this->filter->getCollection($this->collectionFactory->create());
+            $collection = $this->collectionFactory->create();
             $ids = $collection->getAllIds();
         }
 

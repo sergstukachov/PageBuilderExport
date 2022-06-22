@@ -12,7 +12,7 @@ class AbstractEntity implements GeneratorInterface
 {
 
     /** @var TemplatesGenerator */
-    protected $_generator = null;
+    protected $generator = null;
 
     /** @var AbstractCollection */
     protected $_collection = null;

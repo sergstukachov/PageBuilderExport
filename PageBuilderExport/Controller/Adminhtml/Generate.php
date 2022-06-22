@@ -21,7 +21,7 @@ abstract class Generate extends \Magento\Backend\App\Action
         } else {
             $this->messageManager->addNotice(
                 __(
-                    'Templates Script Generated but can\'t be moved to templates_setup folder. Move it there manually.
+                    'Templates Script Generated but can\'t be moved to templates_setup folder.
                      File is : %1',
                     $result->getScriptFileName()
                 )

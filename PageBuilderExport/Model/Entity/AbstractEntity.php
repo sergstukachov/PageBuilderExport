@@ -12,7 +12,7 @@ class AbstractEntity extends TemplatesAbstractEntity
     /**
      * @var array
      */
-    protected $_itemsIds = [];
+    protected $itemsIds = [];
 
     /**
      * @param array $ids
@@ -20,7 +20,7 @@ class AbstractEntity extends TemplatesAbstractEntity
      */
     public function setItemsIds(array $ids)
     {
-        $this->_itemsIds = $ids;
+        $this->itemsIds = $ids;
         return $this;
     }
 
@@ -29,6 +29,6 @@ class AbstractEntity extends TemplatesAbstractEntity
      */
     public function generate(): DataObject
     {
-        return $this->_generator->processUpgradeScript( $this->_itemsIds);
+        return $this->_generator->processUpgradeScript( $this->itemsIds);
     }
 }

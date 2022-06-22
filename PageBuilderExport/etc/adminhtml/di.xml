@@ -8,8 +8,10 @@
                 <item name="0" xsi:type="string">template_id</item>
                 <item name="1" xsi:type="string">preview_image</item>
                 <item name="2" xsi:type="string">name</item>
-                <item name="3" xsi:type="string">created_for</item>
-                <item name="4" xsi:type="string">created_at</item>
+                <item name="3" xsi:type="string">template</item>
+                <item name="4" xsi:type="string">created_for</item>
+                <item name="5" xsi:type="string">created_at</item>
+                <item name="6" xsi:type="string">updated_at</item>
             </argument>
         </arguments>
     </virtualType>

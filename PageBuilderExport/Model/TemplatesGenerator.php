@@ -35,7 +35,7 @@ class TemplatesGenerator extends Generator
         foreach ($entityIds as $templateId) {
             $template = $this->templateRepository->get($templateId);
             $this->_dispatchBeforeFillData($template);
-            $data['items'][] = $this->_clearPageData($template);
+            $data['items'][] = $this->_fillData($template);
         }
         $nextVersion = $this->_getNextModuleVersion();
         $put = $this->putUpgradeFile($data, $nextVersion);
@@ -43,22 +43,7 @@ class TemplatesGenerator extends Generator
             $this->_changeDbVersion($nextVersion);
         }
 
-        return $this->_result;
+        return $this->result;
     }
 
-    /**
-     * Exclude pre-configured data from entity
-     *
-     * @param object $entity
-     * @return array
-     */
-    protected function _clearPageData($entity)
-    {
-        $result = $entity->getData();
-        foreach ($this->_generateEntity->getUpgradeFields() as $field) {
-            unset($result[$field]);
-        }
-
-        return $result;
-    }
 }

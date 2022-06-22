@@ -11,7 +11,7 @@ class Generator
     const UPGRADE_FILE_NAME = 'data-upgrade';
 
     /** @var DataObject */
-    protected $_result;
+    protected $result;
 
     /** @var \SkillUp\PageBuilderExport\Helper\Data */
     protected $_helper = null;
@@ -43,8 +43,8 @@ class Generator
     public function __construct(
         GeneratorContext $context
     ) {
-        $this->_result = new DataObject();
-        $this->_result->setError(false);
+        $this->result = new DataObject();
+        $this->result->setError(false);
         $this->_helper = $context->getHelper();
         $this->_logger = $context->getLogger();
         $this->_filesystemDriver = $context->getFileSystemDriver();
@@ -103,14 +103,14 @@ class Generator
             $fileName = self::UPGRADE_FILE_NAME . '-' . $this->_getCurrentVersion() . '-' . $nextVersion;
             $result = $this->_dataVersion->updateVersion($nextVersion, $fileName);
             if ($result) {
-                $this->_result->setConfigVersionApplied(true);
+                $this->result->setConfigVersionApplied(true);
                 return true;
             }
         } catch (Exception $e) {
             $this->_logger->error($e->getMessage());
         }
 
-        $this->_result->setConfigVersionApplied(false);
+        $this->result->setConfigVersionApplied(false);
         return false;
     }
 
@@ -123,9 +123,9 @@ class Generator
     {
         $version = $this->_getCurrentVersion() . '-' . $nextVersion;
         $fullFileName = $this->_helper->getPathToUpgradeScript($version);
-        $this->_result->setScriptFileName($fullFileName);
-        $this->_result->setScriptApplied(false);
-        $this->_result->setNextConfigVersion($nextVersion);
+        $this->result->setScriptFileName($fullFileName);
+        $this->result->setScriptApplied(false);
+        $this->result->setNextConfigVersion($nextVersion);
 
         try {
             $this->_filesystemDriver->filePutContents($fullFileName, json_encode($content, JSON_PRETTY_PRINT));
@@ -134,10 +134,10 @@ class Generator
         }
 
         if ($this->_filesystemDriver->isExists($fullFileName)) {
-            $this->_result->setScriptApplied(true);
+            $this->result->setScriptApplied(true);
             return true;
         } else {
-            $this->_result->setErrorMsg(__('File : %1 can not be created. Please check permissions', $fullFileName));
+            $this->result->setErrorMsg(__('File : %1 can not be created. Please check permissions', $fullFileName));
         }
         return false;
     }
@@ -228,9 +228,7 @@ class Generator
                 }
             }
         }
-        $new = implode('.', $exploded);
-
-        return $new;
+        return implode('.', $exploded);
     }
 
     /**
@@ -238,7 +236,7 @@ class Generator
      * @return void
      * @throws \Exception
      */
-    public static function throwException($msg)
+    public static function throwException(string $msg): void
     {
         throw new \Exception($msg);
     }
