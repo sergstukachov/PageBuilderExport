@@ -19,7 +19,7 @@ class PBImportCommand extends Command
     /**
      * Version argument
      */
-    const VERSION_ARGUMENT = 'version';
+    public const VERSION_ARGUMENT = 'version';
 
     /** @var \SkillUp\PageBuilderExport\Helper\Data */
     protected Data $helper;
@@ -43,8 +43,16 @@ class PBImportCommand extends Command
      */
     protected $import;
 
-     function __construct(
-         Save $import,
+    /**
+     * @param Save $import
+     * @param File $filesystemDriver
+     * @param Data $helper
+     * @param DataVersion $dataVersion
+     * @param LoggerInterface $logger
+     * @param State $appState
+     */
+    public function __construct(
+        Save $import,
         File $filesystemDriver,
         Data $helper,
         DataVersion $dataVersion,
@@ -61,6 +69,8 @@ class PBImportCommand extends Command
     }
 
     /**
+     * Command for import templates
+     *
      * @return void
      */
     protected function configure(): void
@@ -78,8 +88,11 @@ class PBImportCommand extends Command
     }
 
     /**
+     * Console command
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
      * @return int|void
      * @throws \Exception
      */
@@ -93,8 +106,11 @@ class PBImportCommand extends Command
     }
 
     /**
+     * Console command import
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
      * @return void
      */
     public function executeImportCommand(InputInterface $input, OutputInterface $output)
@@ -102,8 +118,6 @@ class PBImportCommand extends Command
         try {
             if ($input->getArgument('version')) {
                 $this->upgradeVersion($input->getArgument('version'), $output);
-            } else {
-                $this->importAll($output);
             }
         } catch (\Exception $e) {
             $output->writeln($e->getMessage() . ': ' . 'Step skipped');
@@ -111,12 +125,15 @@ class PBImportCommand extends Command
     }
 
     /**
-     * @param $version
-     * @param $output
+     * Upgrade Version
+     *
+     * @param string $version
+     * @param OutputInterface $output
+     *
      * @return void
      * @throws \Magento\Framework\Exception\FileSystemException
      */
-    protected function upgradeVersion($version, $output): void
+    protected function upgradeVersion($version, $output)
     {
         if ($this->filesystemDriver->isExists($this->helper->getPathToUpgradeScript($version))) {
             if ($this->applyImportScript($this->helper->getPathToUpgradeScript($version))) {
@@ -129,55 +146,10 @@ class PBImportCommand extends Command
         }
     }
 
-    /**
-     * @param $output
-     * @return void
-     * @throws \Magento\Framework\Exception\FileSystemException
-     */
-    protected function importAll($output): void
-    {
-        if ($this->filesystemDriver->isExists($this->helper->getModuleSetupDataDir())) {
-            $dir = $this->filesystemDriver->readDirectory($this->helper->getModuleSetupDataDir());
-            try {
-                $lastUpdatedVersion = null;
-                foreach ($dir as $file) {
-                    $fileName = basename($file);
-                    $fileNamesArr = explode('-', $file);
-                    $fileVersion = end($fileNamesArr);
-                    $isFileInstalled = $this->dataVersion->isFileInstalled($fileName);
-
-                    if (version_compare($this->dataVersion->getVersion(), $fileVersion) < 0) {
-                        if ($this->applyImportScript($file)) {
-                            $output->writeln('Imported version ' . $fileVersion);
-                            $lastUpdatedVersion = $fileVersion;
-                        }
-                        if (!$isFileInstalled) {
-                            $this->dataVersion->installFile($fileName);
-                        }
-                    } else {
-                        if (!$isFileInstalled) {
-                            $this->applyImportScript($file, true);
-                            $this->dataVersion->installFile($fileName);
-                            $output->writeln('Installed old version ' . $fileVersion);
-                        }
-                    }
-                }
-                if ($lastUpdatedVersion !== null) {
-                    $this->dataVersion->updateVersion($lastUpdatedVersion);
-                    $output->writeln('DB data version is updated to version: ' . $lastUpdatedVersion);
-                } else {
-                    $output->writeln('No data for import');
-                }
-            } catch (\Exception $e) {
-                $this->logger->critical($e);
-                $output->writeln('Some error is occurred: ' . $e->getMessage());
-            }
-        } else {
-            $output->writeln('Import files not found');
-        }
-    }
 
     /**
+     * Apply Import Script
+     *
      * @param string $file
      * @param bool $checkUpdateDate
      * @return bool

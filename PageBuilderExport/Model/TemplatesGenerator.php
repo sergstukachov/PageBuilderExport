@@ -45,5 +45,4 @@ class TemplatesGenerator extends Generator
 
         return $this->result;
     }
-
 }

@@ -2,7 +2,6 @@
 
 namespace SkillUp\PageBuilderExport\Controller\Adminhtml;
 
-
 abstract class Generate extends \Magento\Backend\App\Action
 {
     /**

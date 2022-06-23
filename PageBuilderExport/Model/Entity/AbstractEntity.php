@@ -6,7 +6,6 @@ use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
 use SkillUp\PageBuilderExport\Model\Templates\AbstractEntity as TemplatesAbstractEntity;
 
-
 class AbstractEntity extends TemplatesAbstractEntity
 {
     /**
@@ -29,6 +28,6 @@ class AbstractEntity extends TemplatesAbstractEntity
      */
     public function generate(): DataObject
     {
-        return $this->_generator->processUpgradeScript( $this->itemsIds);
+        return $this->_generator->processUpgradeScript($this->itemsIds);
     }
 }

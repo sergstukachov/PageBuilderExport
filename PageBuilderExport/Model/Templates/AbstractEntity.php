@@ -7,7 +7,6 @@ use Magento\PageBuilder\Model\ResourceModel\Template\Collection as AbstractColle
 use SkillUp\PageBuilderExport\Model\Generator;
 use SkillUp\PageBuilderExport\Model\TemplatesGenerator;
 
-
 class AbstractEntity implements GeneratorInterface
 {
 

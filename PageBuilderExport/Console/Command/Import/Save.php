@@ -75,7 +75,7 @@ class Save
         return $this;
     }
 
-    public function  prepareModel(array $data)
+    public function prepareModel(array $data)
     {
         $template = $this->templateFactory->create();
         $template->setPreviewImage($data['preview_image']);
@@ -86,23 +86,21 @@ class Save
         $template->setUpdatedAt($data['updated_at']);
         try {
             $this->templateRepository->save($template);
-            var_dump(2);
             $result = [
                 'status' => 'ok',
                 'message' => __('Template was successfully saved.'),
                 'data' => $template->toArray()
             ];
         } catch (LocalizedException $e) {
-            var_dump(3);
             $result = [
                 'status' => 'error',
                 'message' => $e->getMessage()
             ];
-          } catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->critical($e);
 
             $result = [
-                'status' => 'error'
+              'status' => 'error'
             ];
         }
         return $result;

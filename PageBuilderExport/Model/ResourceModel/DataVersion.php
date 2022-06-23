@@ -6,7 +6,15 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 class DataVersion extends AbstractDb
 {
-    const INSTALLED_FILES_TABLE = 'skillup_templates_upgrade_installed_files';
+    /**
+     * Table name. Save numbers generate files
+     */
+    public const INSTALLED_FILES_TABLE = 'skillup_templates_upgrade_installed_files';
+
+    /**
+     * Table name. Save number latest generated file
+     */
+    public const LATEST_GENERATED_FILE = 'skillup_templates_upgrade_data_version';
 
     /**
      * @var []
@@ -14,13 +22,11 @@ class DataVersion extends AbstractDb
     protected $installedFiles;
 
     /**
-     * Model Initialization
-     *
      * @return void
      */
     protected function _construct()
     {
-        $this->_init('skillup_templates_upgrade_data_version', 'id');
+        $this->_init(self::LATEST_GENERATED_FILE, 'id');
     }
 
     /**

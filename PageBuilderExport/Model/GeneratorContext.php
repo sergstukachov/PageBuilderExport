@@ -3,35 +3,40 @@
 namespace SkillUp\PageBuilderExport\Model;
 
 use Magento\Framework\ObjectManager\ContextInterface;
+use SkillUp\PageBuilderExport\Helper\Data;
+use Psr\Log\LoggerInterface;
+use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Event\ManagerInterface;
+use SkillUp\PageBuilderExport\Model\DataVersion;
 
 class GeneratorContext implements ContextInterface
 {
     /**
      * @var \SkillUp\PageBuilderExport\Helper\Data
      */
-    protected $_helper = null;
+    protected $helper = null;
 
     /**
      * @var null|\Psr\Log\LoggerInterface
      */
-    protected $_logger = null;
+    protected $logger = null;
 
     /**
      * @var \Magento\Framework\Filesystem\Driver\File
      */
-    protected $_filesystemDriver = null;
+    protected $filesystemDriver = null;
 
     /**
      * @var null|\SkillUp\PageBuilderExport\Model\DataVersion
      */
-    protected $_dataVersion = null;
+    protected $dataVersion = null;
 
     /**
      * Application Event Dispatcher
      *
      * @var \Magento\Framework\Event\ManagerInterface
      */
-    protected $_eventManager;
+    protected $eventManager;
 
     /**
      * GeneratorContext constructor.
@@ -40,20 +45,20 @@ class GeneratorContext implements ContextInterface
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Filesystem\Driver\File $filesystemDriver
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param DataVersion $dataVersion
+     * @param \SkillUp\PageBuilderExport\Model\DataVersion $dataVersion
      */
     public function __construct(
-        \SkillUp\PageBuilderExport\Helper\Data $helper,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Filesystem\Driver\File $filesystemDriver,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \SkillUp\PageBuilderExport\Model\DataVersion $dataVersion
+        Data $helper,
+        LoggerInterface $logger,
+        File $filesystemDriver,
+        ManagerInterface $eventManager,
+        DataVersion $dataVersion
     ) {
-        $this->_helper = $helper;
-        $this->_logger = $logger;
-        $this->_filesystemDriver = $filesystemDriver;
-        $this->_eventManager = $eventManager;
-        $this->_dataVersion = $dataVersion;
+        $this->helper = $helper;
+        $this->logger = $logger;
+        $this->filesystemDriver = $filesystemDriver;
+        $this->eventManager = $eventManager;
+        $this->dataVersion = $dataVersion;
     }
 
     /**
@@ -61,7 +66,7 @@ class GeneratorContext implements ContextInterface
      */
     public function getHelper()
     {
-        return $this->_helper;
+        return $this->helper;
     }
 
     /**
@@ -69,15 +74,15 @@ class GeneratorContext implements ContextInterface
      */
     public function getLogger()
     {
-        return $this->_logger;
+        return $this->logger;
     }
 
     /**
-     * @return \Psr\Log\LoggerInterface
+     * @return File
      */
     public function getFileSystemDriver()
     {
-        return $this->_filesystemDriver;
+        return $this->filesystemDriver;
     }
 
     /**
@@ -85,7 +90,7 @@ class GeneratorContext implements ContextInterface
      */
     public function getEventManager()
     {
-        return $this->_eventManager;
+        return $this->eventManager;
     }
 
     /**
@@ -93,6 +98,6 @@ class GeneratorContext implements ContextInterface
      */
     public function getDataVersion()
     {
-        return $this->_dataVersion;
+        return $this->dataVersion;
     }
 }

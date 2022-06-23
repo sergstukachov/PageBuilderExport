@@ -5,7 +5,6 @@ namespace SkillUp\PageBuilderExport\Controller\Adminhtml;
 use SkillUp\PageBuilderExport\Model\GeneratorInterface;
 use Magento\Backend\App\Action\Context;
 
-
 class AbstractGenerate extends Generate
 {
     /**

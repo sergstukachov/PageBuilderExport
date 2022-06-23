@@ -5,7 +5,6 @@ namespace SkillUp\PageBuilderExport\Model;
 use Magento\Framework\DataObject;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
-
 class Generator
 {
     const UPGRADE_FILE_NAME = 'data-upgrade';
@@ -14,26 +13,26 @@ class Generator
     protected $result;
 
     /** @var \SkillUp\PageBuilderExport\Helper\Data */
-    protected $_helper = null;
+    protected $helper = null;
 
     /** @var null|\Psr\Log\LoggerInterface */
-    protected $_logger = null;
+    protected $logger = null;
 
     /** @var GeneratorInterface */
-    protected $_generateEntity = null;
+    protected $generateEntity = null;
 
     /** @var \Magento\Framework\Filesystem\Driver\File */
-    protected $_filesystemDriver = null;
+    protected $filesystemDriver = null;
 
     /** @var null|\SkillUp\PageBuilderExport\Model\DataVersion */
-    protected $_dataVersion = null;
+    protected $dataVersion = null;
 
     /**
      * Application Event Dispatcher
      *
      * @var \Magento\Framework\Event\ManagerInterface
      */
-    protected $_eventManager;
+    protected $eventManager;
 
     /**
      * Generator constructor.
@@ -45,11 +44,11 @@ class Generator
     ) {
         $this->result = new DataObject();
         $this->result->setError(false);
-        $this->_helper = $context->getHelper();
-        $this->_logger = $context->getLogger();
-        $this->_filesystemDriver = $context->getFileSystemDriver();
-        $this->_eventManager = $context->getEventManager();
-        $this->_dataVersion = $context->getDataVersion();
+        $this->helper = $context->getHelper();
+        $this->logger = $context->getLogger();
+        $this->filesystemDriver = $context->getFileSystemDriver();
+        $this->eventManager = $context->getEventManager();
+        $this->dataVersion = $context->getDataVersion();
         $this->_checkUpgradeDataFolder();
     }
 
@@ -60,7 +59,7 @@ class Generator
      */
     protected function _checkUpgradeDataFolder()
     {
-        if (empty($this->_helper->getSetupDirConfigValue())) {
+        if (empty($this->helper->getSetupDirConfigValue())) {
             self::throwException(
                 __(
                     'Upgrade script directory can not be created.
@@ -69,12 +68,12 @@ class Generator
             );
         }
 
-        $path = $this->_helper->getModuleSetupDataDir();
-        if (!$this->_filesystemDriver->isExists($path)) {
-            $this->_filesystemDriver->createDirectory($path, 0775);
+        $path = $this->helper->getModuleSetupDataDir();
+        if (!$this->filesystemDriver->isExists($path)) {
+            $this->filesystemDriver->createDirectory($path, 0775);
         }
 
-        if (!$this->_filesystemDriver->isWritable($path)) {
+        if (!$this->filesystemDriver->isWritable($path)) {
             self::throwException(
                 __('Upgrade script directory : %1 can not be created. Please check permissions', $path)
             );
@@ -87,7 +86,7 @@ class Generator
      */
     public function setGenerateEntity(GeneratorInterface $generateEntity)
     {
-        $this->_generateEntity = $generateEntity;
+        $this->generateEntity = $generateEntity;
         return $this;
     }
 
@@ -101,13 +100,13 @@ class Generator
     {
         try {
             $fileName = self::UPGRADE_FILE_NAME . '-' . $this->_getCurrentVersion() . '-' . $nextVersion;
-            $result = $this->_dataVersion->updateVersion($nextVersion, $fileName);
+            $result = $this->dataVersion->updateVersion($nextVersion, $fileName);
             if ($result) {
                 $this->result->setConfigVersionApplied(true);
                 return true;
             }
         } catch (Exception $e) {
-            $this->_logger->error($e->getMessage());
+            $this->logger->error($e->getMessage());
         }
 
         $this->result->setConfigVersionApplied(false);
@@ -122,18 +121,18 @@ class Generator
     protected function putUpgradeFile($content, $nextVersion)
     {
         $version = $this->_getCurrentVersion() . '-' . $nextVersion;
-        $fullFileName = $this->_helper->getPathToUpgradeScript($version);
+        $fullFileName = $this->helper->getPathToUpgradeScript($version);
         $this->result->setScriptFileName($fullFileName);
         $this->result->setScriptApplied(false);
         $this->result->setNextConfigVersion($nextVersion);
 
         try {
-            $this->_filesystemDriver->filePutContents($fullFileName, json_encode($content, JSON_PRETTY_PRINT));
+            $this->filesystemDriver->filePutContents($fullFileName, json_encode($content, JSON_PRETTY_PRINT));
         } catch (Exception $e) {
-            $this->_logger->error($e->getMessage());
+            $this->logger->error($e->getMessage());
         }
 
-        if ($this->_filesystemDriver->isExists($fullFileName)) {
+        if ($this->filesystemDriver->isExists($fullFileName)) {
             $this->result->setScriptApplied(true);
             return true;
         } else {
@@ -153,8 +152,8 @@ class Generator
         $this->_dispatchBeforeFillData($entity);
 
         $result = [];
-        foreach ($this->_generateEntity->getUpgradeFields() as $field) {
-            $fieldGetter = 'get' . $this->_helper->functionalize($field);
+        foreach ($this->generateEntity->getUpgradeFields() as $field) {
+            $fieldGetter = 'get' . $this->helper->functionalize($field);
             $result[$field] = $entity->{$fieldGetter}();
         }
         return $result;
@@ -168,10 +167,10 @@ class Generator
      */
     protected function _dispatchBeforeFillData($entity)
     {
-        $this->_eventManager->dispatch(
-            'before_upgrade_script_fill_data_' . $this->_generateEntity->getEntityType(),
+        $this->eventManager->dispatch(
+            'before_upgrade_script_fill_data_' . $this->generateEntity->getEntityType(),
             [
-                'generate_entity' => $this->_generateEntity,
+                'generate_entity' => $this->generateEntity,
                 'entity' => $entity
             ]
         );
@@ -182,7 +181,7 @@ class Generator
      */
     protected function _getCurrentVersion()
     {
-        return (string)$this->_dataVersion->getVersion();
+        return (string)$this->dataVersion->getVersion();
     }
 
     /**
@@ -198,7 +197,7 @@ class Generator
      */
     protected function _getUpgradeData()
     {
-        return ['entityType' => $this->_generateEntity->getEntityType(), 'items' => []];
+        return ['entityType' => $this->generateEntity->getEntityType(), 'items' => []];
     }
 
     /**
