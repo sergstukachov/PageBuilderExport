@@ -11,22 +11,17 @@ use Psr\Log\LoggerInterface;
 
 class Save
 {
-    const CHECK_UPDATE_DATE_FLAG = '_check_update_date';
+    public const CHECK_UPDATE_DATE_FLAG = '_check_update_date';
 
     /**
-     * Model factory
+     * @var string
      */
-    public $modelFactory;
-
-    /**
-     * Field name for Update Time
-     */
-    public $fieldUpdateTime = 'update_time';
+    protected $fieldUpdateTime = 'update_time';
 
     /**
      * @var array
      */
-    public $upgradeData = [];
+    protected $upgradeData = [];
 
     /**
      * @var LoggerInterface
@@ -35,14 +30,19 @@ class Save
     /**
      * @var TemplateFactory
      */
-    public $templateFactory;
+    protected $templateFactory;
 
     /**
      * @var TemplateRepository
      */
-    public $templateRepository;
+    protected $templateRepository;
 
-
+    /**
+     * Construct
+     *
+     * @param TemplateFactory $templateFactory
+     * @param TemplateRepository $templateRepository
+     */
     public function __construct(
         TemplateFactory $templateFactory,
         TemplateRepository $templateRepository
@@ -51,6 +51,12 @@ class Save
         $this->templateRepository = $templateRepository;
     }
 
+    /**
+     * Upgrade data
+     *
+     * @param bool $checkUpdateDate
+     * @return void
+     */
     public function upgrade($checkUpdateDate = false)
     {
         foreach ($this->upgradeData as $data) {
@@ -66,6 +72,8 @@ class Save
     }
 
     /**
+     * Set upgrade data
+     *
      * @param array $data
      * @return $this
      */
@@ -75,6 +83,12 @@ class Save
         return $this;
     }
 
+    /**
+     * Seve data
+     *
+     * @param array $data
+     * @return array|string[]
+     */
     public function prepareModel(array $data)
     {
         $template = $this->templateFactory->create();

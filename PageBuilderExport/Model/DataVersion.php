@@ -26,29 +26,10 @@ class DataVersion extends AbstractModel
 
     /**
      * @param string $version
-     * @param string $fileName
      * @return int
      */
-    public function updateVersion($version, $fileName = null)
+    public function updateVersion($version)
     {
-        return $this->_getResource()->updateDataVersion($version, $fileName);
-    }
-
-    /**
-     * @param string $fileName
-     * @return bool
-     */
-    public function installFile($fileName)
-    {
-        return $this->_getResource()->installFile($fileName);
-    }
-
-    /**
-     * @param string $fileName
-     * @return bool
-     */
-    public function isFileInstalled($fileName)
-    {
-        return $this->_getResource()->isFileInstalled($fileName);
+        return $this->_getResource()->updateDataVersion($version);
     }
 }

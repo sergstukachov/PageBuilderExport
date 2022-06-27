@@ -23,11 +23,6 @@ class Generate extends SkGenerate
     protected $collectionFactory;
 
     /**
-     * @var string
-     */
-    protected $entityLabel = '';
-
-    /**
      * @var AbstractEntity
      */
     protected $templates;
@@ -39,31 +34,30 @@ class Generate extends SkGenerate
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
      * @param AbstractEntity $templates
-     * @param $entityLabel
      */
     public function __construct(
         Context $context,
         Filter $filter,
         CollectionFactory $collectionFactory,
-        AbstractEntity $templates,
-        $entityLabel
+        AbstractEntity $templates
     ) {
         $this->filter = $filter;
         $this->collectionFactory = $collectionFactory;
         $this->templates = $templates;
-        $this->entityLabel = $entityLabel;
 
         parent::__construct($context);
     }
 
     /**
-     * @return $this|bool
+     * Generate templates
+     *
+     * @return \Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
     {
         $ids = $this->getTemplatesIds();
         if (!is_array($ids)) {
-            $this->messageManager->addErrorMessage(__('Please select a ' . $this->entityLabel . '(s).'));
+            $this->messageManager->addErrorMessage(__('Please select a template(s).'));
         } else {
             $this->templates->setItemsIds($ids);
             try {
@@ -73,13 +67,16 @@ class Generate extends SkGenerate
                 $this->messageManager->addErrorMessage($e->getMessage());
             }
         }
-        /** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
 
         return $resultRedirect->setRefererOrBaseUrl();
     }
 
-
+    /**
+     * Get template(s) id
+     *
+     * @return array|mixed|null
+     */
     protected function getTemplatesIds()
     {
         $ids = $this->getRequest()->getParam(Filter::SELECTED_PARAM) ?? null;

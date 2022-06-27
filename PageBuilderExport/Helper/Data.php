@@ -10,11 +10,9 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 class Data extends AbstractHelper
 {
-    const UPGRADE_SCRIPT_SETUP_DIR = 'app/templates-upgrade-data';
+    public const UPGRADE_SCRIPT_SETUP_DIR = 'app/templates-upgrade-data';
 
     /**
-     * Reader
-     *
      * @var string
      */
     protected $_reader;
@@ -68,6 +66,8 @@ class Data extends AbstractHelper
     }
 
     /**
+     * Get setup dir config value
+     *
      * @return mixed
      */
     public function getSetupDirConfigValue()

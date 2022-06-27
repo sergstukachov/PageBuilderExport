@@ -59,6 +59,14 @@ class Generator
      */
     protected function _checkUpgradeDataFolder()
     {
+        if (!$this->filesystemDriver->isExists($this->helper->getModuleSetupDataDir())) {
+            //Create directory
+            try {
+                $this->filesystemDriver->createDirectory($this->helper->getModuleSetupDataDir());
+            } catch (\Throwable $exception) {
+                return;
+            }
+        }
         if (empty($this->helper->getSetupDirConfigValue())) {
             self::throwException(
                 __(
@@ -181,7 +189,10 @@ class Generator
      */
     protected function _getCurrentVersion()
     {
-        return (string)$this->dataVersion->getVersion();
+        if($this->dataVersion->getVersion() == '') {
+            return '0.0.1';
+        }
+        return $this->dataVersion->getVersion();
     }
 
     /**

@@ -5,6 +5,8 @@ namespace SkillUp\PageBuilderExport\Controller\Adminhtml;
 abstract class Generate extends \Magento\Backend\App\Action
 {
     /**
+     * Set generate result
+     *
      * @param string $result
      * @return void
      */
