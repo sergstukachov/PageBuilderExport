@@ -7,7 +7,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 
 class Generator
 {
-    const UPGRADE_FILE_NAME = 'data-upgrade';
+    public const UPGRADE_FILE_NAME = 'data-upgrade';
 
     /** @var DataObject */
     protected $result;
@@ -35,6 +35,11 @@ class Generator
     protected $eventManager;
 
     /**
+     * @var MessageManagerInterface
+     */
+    protected $messageManager;
+
+    /**
      * Generator constructor.
      *
      * @param GeneratorContext $context
@@ -49,10 +54,13 @@ class Generator
         $this->filesystemDriver = $context->getFileSystemDriver();
         $this->eventManager = $context->getEventManager();
         $this->dataVersion = $context->getDataVersion();
+        $this->messageManager = $context->getMessageManager();
         $this->_checkUpgradeDataFolder();
     }
 
     /**
+     * Function check upgrade data folder
+     *
      * @return void
      * @throws \Exception
      * @throws \Magento\Framework\Exception\FileSystemException
@@ -68,12 +76,10 @@ class Generator
             }
         }
         if (empty($this->helper->getSetupDirConfigValue())) {
-            self::throwException(
-                __(
+                $this->messageManager->addErrorMessage(__(
                     'Upgrade script directory can not be created.
                     Please set Upgrade Script Directory in System Configuration'
-                )
-            );
+                ));
         }
 
         $path = $this->helper->getModuleSetupDataDir();
@@ -82,13 +88,15 @@ class Generator
         }
 
         if (!$this->filesystemDriver->isWritable($path)) {
-            self::throwException(
-                __('Upgrade script directory : %1 can not be created. Please check permissions', $path)
+            $this->messageManager->addErrorMessage(
+                __('Upgrade script directory : %1 can not be created. Please check permissions' . $path)
             );
         }
     }
 
     /**
+     * Function set generate entity
+     *
      * @param GeneratorInterface $generateEntity
      * @return $this
      */
@@ -122,8 +130,11 @@ class Generator
     }
 
     /**
+     * Function upgrade file
+     *
      * @param string $content
      * @param string $nextVersion
+     *
      * @return bool
      */
     protected function putUpgradeFile($content, $nextVersion)
@@ -185,17 +196,21 @@ class Generator
     }
 
     /**
+     * Function Get Current Version
+     *
      * @return string
      */
     protected function _getCurrentVersion()
     {
-        if($this->dataVersion->getVersion() == '') {
+        if ($this->dataVersion->getVersion() == '') {
             return '0.0.1';
         }
         return $this->dataVersion->getVersion();
     }
 
     /**
+     * Function Get Next Module Version
+     *
      * @return string
      */
     protected function _getNextModuleVersion()
@@ -204,6 +219,8 @@ class Generator
     }
 
     /**
+     * Function Get Upgrade Data
+     *
      * @return array
      */
     protected function _getUpgradeData()
@@ -212,6 +229,8 @@ class Generator
     }
 
     /**
+     * Function Calculate Next Version
+     *
      * @param string $basic
      * @return string
      */
@@ -239,15 +258,5 @@ class Generator
             }
         }
         return implode('.', $exploded);
-    }
-
-    /**
-     * @param string $msg
-     * @return void
-     * @throws \Exception
-     */
-    public static function throwException(string $msg): void
-    {
-        throw new \Exception($msg);
     }
 }
